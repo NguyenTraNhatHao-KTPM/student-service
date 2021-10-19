@@ -5,6 +5,7 @@ import com.crud_student.VO.ResponseTemplateVO;
 import com.crud_student.enity.Student;
 import com.crud_student.repository.StudentRepository;
 import com.crud_student.service.StudentService;
+import io.github.resilience4j.retry.annotation.Retry;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -24,6 +25,7 @@ public class StudentServiceImpl implements StudentService {
     }
 
     @Override
+    @Retry(name = "basic")
     public ResponseTemplateVO getStudentWithDepartment(int studentId) {
         ResponseTemplateVO vo = new ResponseTemplateVO();
         Student student = studentRepository.findById(studentId).get();
