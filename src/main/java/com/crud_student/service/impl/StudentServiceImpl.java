@@ -25,7 +25,7 @@ public class StudentServiceImpl implements StudentService {
     }
 
     @Override
-    @Retry(name = "basic")
+    @Retry(name = "basic", fallbackMethod = "getStudentWithDepartmentFallBack")
     public ResponseTemplateVO getStudentWithDepartment(int studentId) {
         ResponseTemplateVO vo = new ResponseTemplateVO();
         Student student = studentRepository.findById(studentId).get();
@@ -36,4 +36,13 @@ public class StudentServiceImpl implements StudentService {
 
         return vo;
     }
+
+    public ResponseTemplateVO getStudentWithDepartmentFallBack(int studentId, RuntimeException exp) {
+        ResponseTemplateVO vo = new ResponseTemplateVO();
+        Student student = studentRepository.findById(studentId).get();
+        vo.setStudent(student);
+        return vo;
+    }
+
+
 }
