@@ -5,6 +5,7 @@ import com.crud_student.VO.ResponseTemplateVO;
 import com.crud_student.enity.Student;
 import com.crud_student.repository.StudentRepository;
 import com.crud_student.service.StudentService;
+import io.github.resilience4j.ratelimiter.annotation.RateLimiter;
 import io.github.resilience4j.retry.annotation.Retry;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -26,7 +27,21 @@ public class StudentServiceImpl implements StudentService {
 
     @Override
     @Retry(name = "basic", fallbackMethod = "getStudentWithDepartmentFallBack")
+    @RateLimiter(name = "basicExample")
     public ResponseTemplateVO getStudentWithDepartment(int studentId) {
+        ResponseTemplateVO vo = new ResponseTemplateVO();
+        Student student = studentRepository.findById(studentId).get();
+        vo.setStudent(student);
+
+        Department department = restTemplate.getForObject(BASE_URL + student.getDepartmentId(), Department.class);
+        vo.setDepartment(department);
+
+        return vo;
+    }
+
+    @Override
+    @RateLimiter(name = "timeoutExample")
+    public ResponseTemplateVO getStudentWithDepartmentTimeout(int studentId) {
         ResponseTemplateVO vo = new ResponseTemplateVO();
         Student student = studentRepository.findById(studentId).get();
         vo.setStudent(student);

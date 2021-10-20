@@ -18,9 +18,16 @@ public class StudentController {
         return studentService.saveStudent(student);
     }
 
-    @GetMapping("/{id}")
+//    ratelimiter
+    @GetMapping("/ratelimiter/{id}")
     public ResponseTemplateVO getStudentWithDepartment(@PathVariable("id") int studentId) {
         return studentService.getStudentWithDepartment(studentId);
+    }
+
+//    Timeout ratelimiter
+    @GetMapping("/ratelimiter/timeout/{id}")
+    public ResponseTemplateVO getStudentWithDepartmentTimeut(@PathVariable("id") int studentId) {
+        return studentService.getStudentWithDepartmentTimeout(studentId);
     }
 
 }
